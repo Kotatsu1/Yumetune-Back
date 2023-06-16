@@ -7,5 +7,5 @@ router = APIRouter(prefix='/api/stream', tags=['stream'])
 
 
 @router.post('/create')
-def upload_music(music_file: Annotated[dict, Depends(making_m3u8.create_hls_stream)]):
+async def upload_music(music_file: Annotated[dict, Depends(making_m3u8.create_hls_stream)]):
     return music_file

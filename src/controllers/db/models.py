@@ -5,7 +5,7 @@ from sqlalchemy.orm import declarative_base
 Base = declarative_base()
 
 
-class DbUser(Base):
+class UserModel(Base):
     __tablename__ = 'users'
     uuid = Column(Integer, primary_key=True, index=True)
     username = Column(String)
