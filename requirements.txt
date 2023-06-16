@@ -3,3 +3,8 @@ uvicorn
 python-multipart
 python-dotenv
 fastapi-jwt-auth
+asyncpg
+sqlalchemy[asyncio]
+passlib
+bcrypt
+uuid

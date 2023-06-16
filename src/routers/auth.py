@@ -1,7 +1,5 @@
 from fastapi import APIRouter, HTTPException, Depends
-
 from fastapi_jwt_auth import AuthJWT
-
 from schemas.auth_schema import Settings, User
 
 router = APIRouter(prefix='/api/auth', tags=['auth'])

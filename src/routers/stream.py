@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends
 from typing import Annotated
-from controllers import making_m3u8
+from controllers.stream import making_m3u8
 
 
 router = APIRouter(prefix='/api/stream', tags=['stream'])

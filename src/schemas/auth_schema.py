@@ -4,9 +4,6 @@ import os
 
 load_dotenv()
 
-class User(BaseModel):
-    username: str
-    password: str
 
 class Settings(BaseModel):
     authjwt_secret_key: str = os.getenv("AUTHJWT_SECRET_KEY")
@@ -14,3 +11,10 @@ class Settings(BaseModel):
     authjwt_cookie_secure: bool = False
     authjwt_cookie_csrf_protect: bool = False
     # authjwt_cookie_samesite: str = 'lax'
+
+
+class User(BaseModel):
+    username: str
+    email: str
+    password: str
+
