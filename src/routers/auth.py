@@ -8,6 +8,8 @@ from controllers.auth.hashing import Hash
 from utils.db.db import get_session
 from controllers.db.models import UserModel
 from sqlalchemy import select
+from datetime import timedelta
+
 
 
 router = APIRouter(prefix='/api/auth', tags=['auth'])
@@ -45,10 +47,10 @@ async def login(request: User, Authorize: AuthJWT = Depends()):
     if not Hash.verify(user.password, request.password):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
         detail=f'Incorrect password')
+    
 
-
-    access_token = Authorize.create_access_token(subject=user.username)
-    refresh_token = Authorize.create_refresh_token(subject=user.username)
+    access_token = Authorize.create_access_token(subject=user.username, expires_time=timedelta(minutes=30))
+    refresh_token = Authorize.create_refresh_token(subject=user.username, expires_time=timedelta(days=30))
 
 
     Authorize.set_access_cookies(access_token)
