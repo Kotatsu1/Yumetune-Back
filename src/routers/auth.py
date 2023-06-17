@@ -78,9 +78,14 @@ async def logout(Authorize: AuthJWT = Depends()):
     return {"msg":"Successfully logout"}
 
 
-@router.get('/protected')
-async def protected(Authorize: AuthJWT = Depends()):
+async def get_current_user(Authorize: AuthJWT = Depends()):
     Authorize.jwt_required()
 
     current_user = Authorize.get_jwt_subject()
-    return {"user": current_user}
+    return current_user
+
+
+@router.get('/protected-endpoint')
+async def protected_endpoint(current_user: str = Depends(get_current_user)):
+    # Your code here
+    return {"msg": f"{current_user}"}
