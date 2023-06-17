@@ -9,6 +9,7 @@ from utils.db.db import get_session
 from controllers.db.models import UserModel
 from sqlalchemy import select
 
+
 router = APIRouter(prefix='/api/auth', tags=['auth'])
 
 
@@ -30,36 +31,30 @@ async def login(request: User, Authorize: AuthJWT = Depends()):
             stmt = select(UserModel).filter(UserModel.username == request.username)
             result = await session.execute(stmt)
             user = result.scalars().first()
-        if not user:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
-            detail=f'Invalid credentials')
-        
-        if not Hash.verify(user.password, request.password):
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
-            detail=f'Incorrect password')
-
 
     elif request.email:
         async with get_session() as session:
             stmt = select(UserModel).filter(UserModel.email == request.email)
             result = await session.execute(stmt)
             user = result.scalars().first()
-        if not user:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
-            detail=f'Invalid credentials')
-        
-        if not Hash.verify(user.password, request.password):
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
-            detail=f'Incorrect password')
+
+    if not user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+        detail=f'Invalid credentials')
+    
+    if not Hash.verify(user.password, request.password):
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+        detail=f'Incorrect password')
 
 
-    access_token = Authorize.create_access_token(subject=request.username)
-    refresh_token = Authorize.create_refresh_token(subject=request.username)
+    access_token = Authorize.create_access_token(subject=user.username)
+    refresh_token = Authorize.create_refresh_token(subject=user.username)
 
 
     Authorize.set_access_cookies(access_token)
     Authorize.set_refresh_cookies(refresh_token)
     return {"msg":"Successfully login"}
+
 
 @router.post('/refresh')
 async def refresh(Authorize: AuthJWT = Depends()):
@@ -71,6 +66,7 @@ async def refresh(Authorize: AuthJWT = Depends()):
     Authorize.set_access_cookies(new_access_token)
     return {"msg":"The token has been refresh"}
 
+
 @router.delete('/logout')
 async def logout(Authorize: AuthJWT = Depends()):
 
@@ -78,6 +74,7 @@ async def logout(Authorize: AuthJWT = Depends()):
 
     Authorize.unset_jwt_cookies()
     return {"msg":"Successfully logout"}
+
 
 @router.get('/protected')
 async def protected(Authorize: AuthJWT = Depends()):
