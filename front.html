@@ -8,7 +8,7 @@
     if (Hls.isSupported()) {
       var audio = document.getElementsByTagName("audio")[0];
       var hls = new Hls();
-      hls.loadSource('http://localhost:8000/songs/Gawr Gura Sing Riptide/output.m3u8');
+      hls.loadSource('http://localhost:8000/songs/123-123/output.m3u8');
       hls.attachMedia(audio);
       hls.on(Hls.Events.MANIFEST_PARSED, function() {
         audio.play();

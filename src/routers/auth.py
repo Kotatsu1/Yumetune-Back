@@ -3,13 +3,11 @@ from fastapi_jwt_auth import AuthJWT
 from schemas.auth_schema import Settings, User
 from typing import Annotated
 from controllers.auth import signup
-
 from controllers.auth.hashing import Hash
 from utils.db.db import get_session
 from controllers.db.models import UserModel
 from sqlalchemy import select
 from datetime import timedelta
-
 
 
 router = APIRouter(prefix='/api/auth', tags=['auth'])
