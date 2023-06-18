@@ -15,9 +15,10 @@ class UserModel(Base):
 
 class Songs(Base):
     __tablename__ = 'songs'
-    id = Column(String, primary_key=True, index=True)
+    id = Column(Integer, primary_key=True, index=True)
     artist = Column(String)
     title = Column(String)
+    length = Column(Integer)
 
 
 class UserLibrary(Base):

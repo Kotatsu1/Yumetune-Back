@@ -8,3 +8,4 @@ sqlalchemy[asyncio]
 passlib
 bcrypt
 uuid
+mutagen
