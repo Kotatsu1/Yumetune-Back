@@ -1,14 +1,15 @@
 import os
 import subprocess
-from fastapi import File, UploadFile
+from fastapi import File, UploadFile, Depends
 import tempfile
 from fastapi import HTTPException
 from mutagen.mp3 import MP3
 from utils.db.db import get_session
 from controllers.db.models import Songs
+from routers.auth import get_current_user
 
 
-async def create_hls_stream(artist: str, title: str, input_file: UploadFile = File(...)):
+async def create_hls_stream(artist: str, title: str, input_file: UploadFile = File(...), current_user = Depends(get_current_user)):
     try:
         output_folder = f'songs/{artist}-{title}'
         os.makedirs(output_folder, exist_ok=True)

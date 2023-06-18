@@ -47,7 +47,7 @@ async def login(request: User, Authorize: AuthJWT = Depends()):
         detail=f'Incorrect password')
     
 
-    access_token = Authorize.create_access_token(subject=user.username, expires_time=timedelta(minutes=30))
+    access_token = Authorize.create_access_token(subject=user.username, expires_time=timedelta(minutes=1))
     refresh_token = Authorize.create_refresh_token(subject=user.username, expires_time=timedelta(days=30))
 
 
@@ -75,3 +75,9 @@ async def logout(Authorize: AuthJWT = Depends()):
     Authorize.unset_jwt_cookies()
     return {"msg":"Successfully logout"}
 
+
+async def get_current_user(Authorize: AuthJWT = Depends()):
+    Authorize.jwt_required()
+
+    current_user = Authorize.get_jwt_subject()
+    return current_user
