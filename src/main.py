@@ -38,7 +38,7 @@ async def create_models(engine, Base):
         await conn.run_sync(Base.metadata.create_all)
 
 
-app.mount('/songs', StaticFiles(directory='songs'), name='songs')
+app.mount('/songs', StaticFiles(directory='/src/songs'), name='songs')
 
 if __name__ == "__main__":
     asyncio.run(create_models(engine, Base))
