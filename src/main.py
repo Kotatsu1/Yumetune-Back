@@ -19,7 +19,7 @@ app.include_router(library.router)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=['*'],
+    allow_origins=['https://kotatsu.fun'],
     allow_credentials=True,
     allow_methods=['*'],
     allow_headers=['*']
