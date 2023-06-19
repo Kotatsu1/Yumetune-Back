@@ -47,7 +47,7 @@ async def login(request: User, Authorize: AuthJWT = Depends()):
         detail=f'Incorrect password')
     
 
-    access_token = Authorize.create_access_token(subject=user.username, expires_time=timedelta(minutes=1))
+    access_token = Authorize.create_access_token(subject=user.username, expires_time=timedelta(minutes=30))
     refresh_token = Authorize.create_refresh_token(subject=user.username, expires_time=timedelta(days=30))
 
 

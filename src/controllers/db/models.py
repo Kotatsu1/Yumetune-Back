@@ -23,8 +23,8 @@ class Songs(Base):
 
 class UserLibrary(Base):
     __tablename__ = 'library'
-    id = Column(String, primary_key=True, index=True)
-    title = Column(String)
+    library_id = Column(Integer, primary_key=True, index=True)
+    song_id = Column(Integer, ForeignKey('songs.id'))
     play_count = Column(Integer)
     added_at = Column(DateTime)
     user_uuid = Column(String, ForeignKey('users.uuid'))

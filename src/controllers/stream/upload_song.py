@@ -12,6 +12,9 @@ from routers.auth import get_current_user
 async def create_hls_stream(artist: str, title: str, input_file: UploadFile = File(...), current_user = Depends(get_current_user)):
     try:
         output_folder = f'songs/{artist}-{title}'
+        if os.path.exists(output_folder):
+            raise HTTPException(status_code=409, detail="Song already exists")
+
         os.makedirs(output_folder, exist_ok=True)
 
         output_file = os.path.join(output_folder, 'output.m3u8')
@@ -61,3 +64,4 @@ async def add_song(artist, title, length):
         await session.commit()
         await session.refresh(new_song)
     return new_song
+
