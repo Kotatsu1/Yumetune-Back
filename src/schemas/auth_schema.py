@@ -10,7 +10,7 @@ class Settings(BaseModel):
     authjwt_token_location: set = {"cookies"}
     authjwt_cookie_secure: bool = False
     authjwt_cookie_csrf_protect: bool = False
-    # authjwt_cookie_samesite: str = 'lax'
+    authjwt_cookie_samesite: str = 'lax'
 
 
 class User(BaseModel):
