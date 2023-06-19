@@ -42,10 +42,10 @@ jobs:
             sudo docker login -u ${{ secrets.DOCKER_LOGIN }} -p ${{ secrets.DOCKER_PASSWORD }}
 
             # Stop running container
-            sudo docker stop fastapi-cont
+            sudo docker stop yumetune-backend-cont
 
             # Remove old container
-            sudo docker rm fastapi-cont
+            sudo docker rm yumetune-backend-cont
 
             # Remove old image
             sudo docker rmi kotatsu111/yumetune:backend
