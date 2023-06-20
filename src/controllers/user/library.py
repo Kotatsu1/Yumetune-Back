@@ -38,9 +38,9 @@ async def add_song(request: Library, current_user = Depends(get_current_user)):
         await session.refresh(new_library_item)
     return {'msg': 'Song added successfully'}
 
-async def remove_song(song_id: int, current_user = Depends(get_current_user)):
+async def remove_song(request: Library, current_user = Depends(get_current_user)):
     async with get_session() as session:
-        stmt = delete(UserLibrary).filter(UserLibrary.song_id == song_id, UserLibrary.user_uuid == current_user)
+        stmt = delete(UserLibrary).filter(UserLibrary.song_id == request.song_id, UserLibrary.user_uuid == current_user)
         await session.execute(stmt)
         await session.commit()
     return {'msg': 'Song removed successfully'}

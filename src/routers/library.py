@@ -5,7 +5,7 @@ from controllers.user import library
 router = APIRouter(prefix='/api/library', tags=['library'])
 
 
-@router.post('/all')
+@router.get('/all')
 async def get_user_library(idk=Depends(library.get_user_library)):
     return idk
 
