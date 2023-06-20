@@ -6,7 +6,7 @@ router = APIRouter(prefix='/api/library', tags=['library'])
 
 
 @router.post('/all')
-async def get_user_library(idk=Depends()):
+async def get_user_library(idk=Depends(library.get_user_library)):
     return idk
 
 
@@ -16,5 +16,5 @@ async def add_song(idk=Depends(library.add_song)):
 
 
 @router.post('/remove')
-async def remove_song(idk=Depends()):
+async def remove_song(idk=Depends(library.remove_song)):
     return idk
