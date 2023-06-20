@@ -1,12 +1,12 @@
 from fastapi import APIRouter, HTTPException, Depends, status
 from fastapi_jwt_auth import AuthJWT
-from schemas.auth_schema import Settings, User
+from schemas.auth_schema import Settings, UserLogin
 from typing import Annotated
 from controllers.auth import signup
 from controllers.auth.hashing import Hash
 from utils.db.db import get_session
 from controllers.db.models import UserModel
-from sqlalchemy import select
+from sqlalchemy import select, or_
 from datetime import timedelta
 
 
@@ -24,19 +24,20 @@ async def register(user: Annotated[dict, Depends(signup.create_user)]):
 
 
 @router.post('/login')
-async def login(request: User, Authorize: AuthJWT = Depends()):
+async def login(request: UserLogin, Authorize: AuthJWT = Depends()):
 
-    if request.username:
+    if request.login:
         async with get_session() as session:
-            stmt = select(UserModel).filter(UserModel.username == request.username)
+            stmt = select(UserModel).filter(or_(UserModel.username == request.login, UserModel.email == request.login))
             result = await session.execute(stmt)
             user = result.scalars().first()
-
-    elif request.email:
-        async with get_session() as session:
-            stmt = select(UserModel).filter(UserModel.email == request.email)
-            result = await session.execute(stmt)
-            user = result.scalars().first()
+    else:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'Login not provided')
+    # elif request.email:
+    #     async with get_session() as session:
+    #         stmt = select(UserModel).filter(UserModel.email == request.email)
+    #         result = await session.execute(stmt)
+    #         user = result.scalars().first()
 
     if not user:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,

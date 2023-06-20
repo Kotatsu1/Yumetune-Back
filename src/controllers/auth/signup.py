@@ -1,13 +1,13 @@
 from utils.db.db import get_session
 from controllers.db.models import UserModel
-from schemas.auth_schema import User
+from schemas.auth_schema import UserRegister
 from .hashing import Hash
 import uuid
 from sqlalchemy import select, or_
 from fastapi import status, HTTPException
 
 
-async def create_user(request: User):
+async def create_user(request: UserRegister):
     async with get_session() as session:
         stmt = select(UserModel).filter(or_(UserModel.username == request.username, UserModel.email == request.email))
         result = await session.execute(stmt)

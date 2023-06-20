@@ -13,9 +13,12 @@ class Settings(BaseModel):
     authjwt_cookie_samesite: str = 'lax'
 
 
-class User(BaseModel):
+class UserRegister(BaseModel):
     username: str
     email: str
     password: str
 
         
+class UserLogin(BaseModel):
+    login: str
+    password: str
