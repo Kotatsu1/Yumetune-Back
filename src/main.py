@@ -2,7 +2,7 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 import uvicorn
-from routers import stream, auth, library
+from routers import stream, auth, library, playlist
 from fastapi.responses import JSONResponse
 from fastapi_jwt_auth.exceptions import AuthJWTException
 from utils.db.db import engine
@@ -16,6 +16,7 @@ app = FastAPI(title='Yumetune API')
 app.include_router(stream.router)
 app.include_router(auth.router)
 app.include_router(library.router)
+app.include_router(playlist.router)
 
 app.add_middleware(
     CORSMiddleware,

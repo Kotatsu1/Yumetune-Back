@@ -1,4 +1,4 @@
-from controllers.db.models import UserLibrary
+from controllers.db.models import UserLibrary, Songs
 from utils.db.db import get_session
 from datetime import datetime
 from schemas.library_schema import Library
@@ -8,18 +8,22 @@ from routers.auth import get_current_user
 
 
 async def get_user_library(current_user = Depends(get_current_user)):
-
     async with get_session() as session:
-        stmt = select(UserLibrary).filter(UserLibrary.user_uuid == current_user)
+
+        stmt = (
+            select(UserLibrary.library_id, UserLibrary.play_count, UserLibrary.added_at, Songs.artist, Songs.title, Songs.length)
+                .join(Songs, UserLibrary.song_id == Songs.id)
+                .filter(UserLibrary.user_uuid == current_user)
+            )
         result = await session.execute(stmt)
-        library_items = result.scalars().all()
+        library_items = result.mappings().all()
+
     return library_items
 
 
-
 async def add_song(request: Library, current_user = Depends(get_current_user)):
-
     async with get_session() as session:
+
         stmt = select(UserLibrary).filter(UserLibrary.song_id == request.song_id, UserLibrary.user_uuid == current_user)
         result = await session.execute(stmt)
         existing_library_item = result.scalars().first()

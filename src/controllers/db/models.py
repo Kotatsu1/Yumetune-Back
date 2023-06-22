@@ -1,6 +1,6 @@
 from sqlalchemy.sql.schema import ForeignKey
 from sqlalchemy import Column, Integer, String, DateTime
-from sqlalchemy.orm import declarative_base
+from sqlalchemy.orm import declarative_base, relationship
 
 Base = declarative_base()
 
@@ -28,3 +28,18 @@ class UserLibrary(Base):
     play_count = Column(Integer)
     added_at = Column(DateTime)
     user_uuid = Column(String, ForeignKey('users.uuid'))
+
+
+class Playlists(Base):
+    __tablename__ = 'playlists'
+    playlist_id = Column(Integer, primary_key=True, index=True)
+    name = Column(String)
+    user_uuid = Column(String, ForeignKey('users.uuid'))
+
+
+class PlaylistContent(Base):
+    __tablename__ = 'playlist_content'
+    playlist_content_id = Column(Integer, primary_key=True, index=True)
+    playlist_id = Column(Integer, ForeignKey('playlists.playlist_id'))
+    song_id = Column(Integer, ForeignKey('songs.id'))
+    added_at = Column(DateTime)

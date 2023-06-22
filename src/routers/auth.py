@@ -33,11 +33,6 @@ async def login(request: UserLogin, Authorize: AuthJWT = Depends()):
             user = result.scalars().first()
     else:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'Login not provided')
-    # elif request.email:
-    #     async with get_session() as session:
-    #         stmt = select(UserModel).filter(UserModel.email == request.email)
-    #         result = await session.execute(stmt)
-    #         user = result.scalars().first()
 
     if not user:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
