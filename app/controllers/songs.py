@@ -1,4 +1,5 @@
 from fastapi import APIRouter, File, UploadFile, Body, Depends
+from fastapi.responses import FileResponse
 from services import songs
 from schemas.song_schema import Song
 from security.user import get_current_user
@@ -15,3 +16,4 @@ async def upload_song(artist = Body(...), title = Body(...), input_file: UploadF
 @router.get('/all')
 async def list_songs():
     return await songs.fetch_songs_from_db()
+

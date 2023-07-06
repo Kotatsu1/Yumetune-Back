@@ -23,6 +23,7 @@ app.include_router(playlist.router)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=['https://kotatsu.fun'],
+    # allow_origins=['http://localhost:5173'],
     allow_credentials=True,
     allow_methods=['*'],
     allow_headers=['*']
@@ -42,6 +43,7 @@ async def create_models(engine, Base):
 
 
 app.mount('/songs', StaticFiles(directory='/app/songs'), name='songs')
+# app.mount('/songs', StaticFiles(directory='songs'), name='songs')
 
 if __name__ == "__main__":
     asyncio.run(create_models(engine, Base))
