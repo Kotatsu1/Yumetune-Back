@@ -26,8 +26,8 @@ async def create_hls_stream(artist: str, title: str, input_file: UploadFile = Fi
 
         os.makedirs(output_folder, exist_ok=True)
 
-        output_file = os.path.join(output_folder, 'output.m3u8')
-        segment_file = os.path.join(output_folder, 'output_%03d.ts')
+        output_file = os.path.join(output_folder, 'playlist.m3u8')
+        segment_file = os.path.join(output_folder, 'seg_%03d.ts')
 
         audio_data = await input_file.read()
 

@@ -25,3 +25,4 @@ uuid==1.30
 uvicorn==0.22.0
 websockets==11.0.3
 yt-dlp==2023.7.6
+requests
