@@ -2,7 +2,7 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 import uvicorn
-from controllers import songs, auth, library, playlist
+from controllers import songs, auth, library, playlist, yt_search
 from fastapi.responses import JSONResponse
 from fastapi_jwt_auth.exceptions import AuthJWTException
 from database.postgresql import engine
@@ -19,6 +19,7 @@ app.include_router(songs.router)
 app.include_router(auth.router)
 app.include_router(library.router)
 app.include_router(playlist.router)
+app.include_router(yt_search.router)
 
 app.add_middleware(
     CORSMiddleware,
