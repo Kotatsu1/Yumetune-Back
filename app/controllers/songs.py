@@ -14,6 +14,6 @@ async def upload_song(artist = Body(...), title = Body(...), input_file: UploadF
 
 
 @router.get('/all')
-async def list_songs():
+async def list_songs(current_user = Depends(get_current_user)):
     return await songs.fetch_songs_from_db()
 
