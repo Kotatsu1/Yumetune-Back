@@ -57,7 +57,7 @@ async def login(request: UserLogin, Authorize: AuthJWT = Depends()):
         detail=f'Incorrect password')
     
 
-    access_token = Authorize.create_access_token(subject=user.uuid, expires_time=timedelta(minutes=30))
+    access_token = Authorize.create_access_token(subject=user.uuid, expires_time=timedelta(minutes=15))
     refresh_token = Authorize.create_refresh_token(subject=user.uuid, expires_time=timedelta(days=30))
 
 
@@ -70,15 +70,18 @@ async def refresh(Authorize: AuthJWT = Depends()):
     Authorize.jwt_refresh_token_required()
 
     current_user = Authorize.get_jwt_subject()
-    new_access_token = Authorize.create_access_token(subject=current_user)
+    new_access_token = Authorize.create_access_token(subject=current_user, expires_time=timedelta(minutes=15))
 
     Authorize.set_access_cookies(new_access_token)
     return {"msg":"The token has been refresh"}
 
 
 async def logout(Authorize: AuthJWT = Depends()):
+    try:
+        Authorize.jwt_required()
 
-    Authorize.jwt_required()
-
-    Authorize.unset_jwt_cookies()
-    return {"msg":"Successfully logout"}
+        Authorize.unset_jwt_cookies()
+        return {"msg":"Successfully logout"}
+    
+    except Exception as e:
+        raise HTTPException(status_code=401, detail=str(e))
