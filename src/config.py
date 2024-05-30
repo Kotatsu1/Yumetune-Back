@@ -17,6 +17,8 @@ class Config():
     REFRESH_TOKEN_EXPIRE_DAYS: str
     ACCESS_TOKEN_EXPIRE_MINUTES: str
 
+    SECRET_KEY: str
+
     def set_mode(self, mode):
         self.MODE = mode
 

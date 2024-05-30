@@ -37,19 +37,3 @@ class UserCreateDB(UserBase):
 
 class UserUpdateDB(UserBase):
     hashed_password: str
-
-
-class RefreshSessionCreate(BaseModel):
-    refresh_token: uuid.UUID
-    expires_in: int
-    user_id: uuid.UUID
-
-
-class RefreshSessionUpdate(RefreshSessionCreate):
-    user_id: Optional[uuid.UUID] = Field(None)
-
-
-class Token(BaseModel):
-    access_token: str
-    refresh_token: uuid.UUID
-    token_type: str

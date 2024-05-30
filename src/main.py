@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 import uvicorn
-from fastapi.middleware.cors import CORSMiddleware
+
 from argparse import ArgumentParser
 from config import config
 
@@ -13,7 +13,12 @@ config.set_mode(mode)
 config.update_config()
 
 
+from fastapi.middleware.cors import CORSMiddleware
+from auth.auth_router import auth_router
+from users.user_router import user_router
+
 app = FastAPI()
+
 
 app.add_middleware(
     CORSMiddleware,
@@ -22,6 +27,10 @@ app.add_middleware(
     allow_methods=config.CORS_METHODS,
     allow_headers=config.CORS_HEADERS,
 )
+
+app.include_router(auth_router)
+app.include_router(user_router)
+
 
 @app.get('/hello')
 def hello_world():
