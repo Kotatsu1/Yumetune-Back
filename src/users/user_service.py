@@ -1,10 +1,11 @@
-from fastapi import HTTPException
+from fastapi import HTTPException, status
 from typing import Optional
 import uuid
 from .user_schemas import UserCreate, User, UserCreateDB, UserUpdate, UserUpdateDB
 from .user_models import UserModel
 from .user_dao import UserDAO
 from database import async_session_maker
+from utils import get_password_hash
 
 
 

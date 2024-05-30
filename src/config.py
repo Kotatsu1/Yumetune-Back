@@ -1,6 +1,11 @@
 from dotenv import dotenv_values
+import os
 
 class Config():
+    # def __init__(self):
+    #     self.set_mode("dev")
+    #     self.update_config()
+
     MODE: str
     ENV_VALUES: dict
 
@@ -24,7 +29,7 @@ class Config():
 
     
     def update_config(self):
-        dotenv_path = f".env.{self.MODE}"
+        dotenv_path = os.path.join(os.path.dirname(__file__), f".env.{self.MODE}")
         self.ENV_VALUES = dotenv_values(dotenv_path)
         
         for key, value in self.ENV_VALUES.items():
@@ -37,3 +42,4 @@ class Config():
 
 
 config = Config()
+
