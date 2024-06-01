@@ -6,6 +6,7 @@ from .user_models import UserModel
 from .user_dao import UserDAO
 from database import async_session_maker
 from utils import get_password_hash
+from .exceptions import *
 
 
 
@@ -15,8 +16,7 @@ class UserService:
         async with async_session_maker() as session:
             user_exist = await UserDAO.find_one_or_none(session, email=user.email)
             if user_exist:
-                raise HTTPException(
-                    status_code=status.HTTP_409_CONFLICT, detail="User already exists")
+                raise UserExistsException
 
             user.is_superuser = False
             user.is_verified = False
@@ -35,8 +35,7 @@ class UserService:
         async with async_session_maker() as session:
             db_user = await UserDAO.find_one_or_none(session, id=user_id)
         if db_user is None:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+            raise UserNotFoundException
         return db_user
 
     @classmethod
@@ -44,8 +43,7 @@ class UserService:
         async with async_session_maker() as session:
             db_user = await UserDAO.find_one_or_none(session, UserModel.id == user_id)
             if db_user is None:
-                raise HTTPException(
-                    status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+                raise UserNotFoundException
 
             if user.password:
                 user_in = UserUpdateDB(
@@ -71,8 +69,8 @@ class UserService:
         async with async_session_maker() as session:
             db_user = await UserDAO.find_one_or_none(session, id=user_id)
             if db_user is None:
-                raise HTTPException(
-                    status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+                raise UserNotFoundException
+
             await UserDAO.update(
                 session,
                 UserModel.id == user_id,
@@ -85,26 +83,17 @@ class UserService:
         async with async_session_maker() as session:
             users = await UserDAO.find_all(session, *filter, offset=offset, limit=limit, **filter_by)
         if users is None:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND, detail="Users not found")
+            raise UserNotFoundException
+
         return users
-        return [
-            User(
-                id=str(db_user.id),
-                email=db_user.email,
-                fio=db_user.fio,
-                is_active=db_user.is_active,
-                is_superuser=db_user.is_superuser
-            ) for db_user in users
-        ]
+
 
     @classmethod
     async def update_user_from_superuser(cls, user_id: uuid.UUID, user: UserUpdate) -> User:
         async with async_session_maker() as session:
             db_user = await UserDAO.find_one_or_none(session, UserModel.id == user_id)
             if db_user is None:
-                raise HTTPException(
-                    status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+                raise UserNotFoundException
 
             user_in = UserUpdateDB(**user.model_dump(exclude_unset=True))
             user_update = await UserDAO.update(

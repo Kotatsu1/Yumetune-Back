@@ -51,7 +51,7 @@ async def signin(
 async def logout(
     request: Request,
     response: Response,
-    user: UserModel = Depends(get_current_active_user),
+    user: UserModel = Depends(get_current_user),
 ):
     response.delete_cookie('access_token')
     response.delete_cookie('refresh_token')

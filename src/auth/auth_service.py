@@ -18,7 +18,7 @@ class AuthService:
     async def create_token(cls, user_id: uuid.UUID) -> Token:
         access_token = cls._create_access_token(user_id)
         refresh_token_expires = timedelta(
-            days=config.REFRESH_TOKEN_EXPIRE_DAYS)
+            days=float(config.REFRESH_TOKEN_EXPIRE_DAYS))
         refresh_token = cls._create_refresh_token()
 
         async with async_session_maker() as session:
@@ -49,7 +49,7 @@ class AuthService:
             if refresh_session is None:
                 raise InvalidTokenException
             if datetime.now(timezone.utc) >= refresh_session.created_at + timedelta(seconds=refresh_session.expires_in):
-                await RefreshSessionDAO.delete(id=refresh_session.id)
+                await RefreshSessionDAO.delete(session, id=refresh_session.id)
                 raise TokenExpiredException
 
             user = await UserDAO.find_one_or_none(session, id=refresh_session.user_id)
@@ -58,7 +58,7 @@ class AuthService:
 
             access_token = cls._create_access_token(user.id)
             refresh_token_expires = timedelta(
-                days=config.REFRESH_TOKEN_EXPIRE_DAYS)
+                days=float(config.REFRESH_TOKEN_EXPIRE_DAYS))
             refresh_token = cls._create_refresh_token()
 
             await RefreshSessionDAO.update(
@@ -66,7 +66,8 @@ class AuthService:
                 RefreshSessionModel.id == refresh_session.id,
                 obj_in=RefreshSessionUpdate(
                     refresh_token=refresh_token,
-                    expires_in=refresh_token_expires.total_seconds()
+                    expires_in=refresh_token_expires.total_seconds(),
+                    user_id=user.id
                 )
             )
             await session.commit()
@@ -90,15 +91,15 @@ class AuthService:
     def _create_access_token(cls, user_id: uuid.UUID) -> str:
         to_encode = {
             "sub": str(user_id),
-            "exp": datetime.utcnow() + timedelta(
-                minutes=config.ACCESS_TOKEN_EXPIRE_MINUTES)
+            "exp": datetime.now(timezone.utc) + timedelta(
+                minutes=float(config.ACCESS_TOKEN_EXPIRE_MINUTES))
         }
         encoded_jwt = jwt.encode(
-            to_encode, config.SECRET_KEY, algorithm=config.ALGORITHM)
+            to_encode, config.SECRET_KEY, algorithm="HS256")
         return f'Bearer {encoded_jwt}'
 
     @classmethod
-    def _create_refresh_token(cls) -> str:
+    def _create_refresh_token(cls) -> uuid.UUID:
         return uuid.uuid4()
 
 

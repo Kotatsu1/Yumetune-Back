@@ -6,7 +6,7 @@ from pydantic import BaseModel, Field
 
 class RefreshSessionCreate(BaseModel):
     refresh_token: uuid.UUID
-    expires_in: int
+    expires_in: float
     user_id: uuid.UUID
 
 
