@@ -1,4 +1,3 @@
-from fastapi import HTTPException, status
 from typing import Optional
 import uuid
 from .user_schemas import UserCreate, User, UserCreateDB, UserUpdate, UserUpdateDB
@@ -14,7 +13,7 @@ class UserService:
     @classmethod
     async def register_new_user(cls, user: UserCreate) -> UserModel:
         async with async_session_maker() as session:
-            user_exist = await UserDAO.find_one_or_none(session, email=user.email)
+            user_exist = await UserDAO.find_one_or_none(session, username=user.username)
             if user_exist:
                 raise UserExistsException
 
