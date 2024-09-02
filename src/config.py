@@ -5,8 +5,7 @@ class Config():
         self.update_config()
 
     DATABASE_URL: str
-
-    CORS_ORIGINS=["http://localhost:5173"]
+    CORS_ORIGINS=["*"]
     CORS_METHODS=["*"]
     CORS_HEADERS=["*"]
 

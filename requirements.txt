@@ -7,3 +7,4 @@ python-jose
 passlib
 pytest
 python-dotenv
+python-multipart
