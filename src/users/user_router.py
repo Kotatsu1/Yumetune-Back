@@ -18,7 +18,7 @@ async def get_users_list(
 
 @user_router.get("/me")
 async def get_current_user(
-    current_user: UserModel = Depends(get_current_active_user)
+    current_user: UserModel = Depends(get_current_user)
 ) -> User:
     return await UserService.get_user(current_user.id)
 
