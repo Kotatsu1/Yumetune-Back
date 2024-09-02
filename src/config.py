@@ -1,38 +1,25 @@
-from dotenv import dotenv_values
 import os
 
 class Config():
     def __init__(self):
         self.update_config()
 
-    POSTGRES_DB: str
-    POSTGRES_USER: str
-    POSTGRES_PASSWORD: str
-    POSTGRES_HOST: str
-    POSTGRES_PORT: str
+    DATABASE_URL: str
 
-    CORS_ORIGINS: list
-    CORS_METHODS: list
-    CORS_HEADERS: list
+    CORS_ORIGINS=["http://localhost:5173"]
+    CORS_METHODS=["*"]
+    CORS_HEADERS=["*"]
 
-    REFRESH_TOKEN_EXPIRE_DAYS: str
-    ACCESS_TOKEN_EXPIRE_MINUTES: str
+    REFRESH_TOKEN_EXPIRE_DAYS=30
+    ACCESS_TOKEN_EXPIRE_MINUTES=60
 
     SECRET_KEY: str
 
     
     def update_config(self):
-        dotenv_path = os.path.join(os.path.dirname(__file__), ".env")
-        ENV_VALUES = dotenv_values(dotenv_path)
-        
-        for key, value in ENV_VALUES.items():
-            setattr(self, key, value)
-
-
-    @property
-    def DATABASE_URL(self):
-        return f"postgresql+asyncpg://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}@{self.POSTGRES_HOST}:{self.POSTGRES_PORT}/{self.POSTGRES_DB}"
-
+        for key, value in os.environ.items():
+            if key in os.environ:
+                setattr(self, key, value)
 
 config = Config()
 
