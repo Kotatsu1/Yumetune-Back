@@ -8,7 +8,6 @@ from utils import get_password_hash
 from .exceptions import *
 
 
-
 class UserService:
     @classmethod
     async def register_new_user(cls, user: UserCreate) -> UserModel:
@@ -18,7 +17,6 @@ class UserService:
                 raise UserExistsException
 
             user.is_superuser = False
-            user.is_verified = False
             db_user = await UserDAO.add(
                 session,
                 UserCreateDB(
@@ -29,6 +27,7 @@ class UserService:
 
         return db_user
 
+
     @classmethod
     async def get_user(cls, user_id: uuid.UUID) -> UserModel:
         async with async_session_maker() as session:
@@ -36,6 +35,7 @@ class UserService:
         if db_user is None:
             raise UserNotFoundException
         return db_user
+
 
     @classmethod
     async def update_user(cls, user_id: uuid.UUID, user: UserUpdate) -> UserModel:
@@ -48,7 +48,7 @@ class UserService:
                 user_in = UserUpdateDB(
                     **user.model_dump
                     (
-                        exclude={'is_active', 'is_verified', 'is_superuser'},
+                        exclude={'is_superuser'},
                         exclude_unset=True
                     ),
                     hashed_password=get_password_hash(user.password)
@@ -63,19 +63,6 @@ class UserService:
             await session.commit()
             return user_update
 
-    @classmethod
-    async def delete_user(cls, user_id: uuid.UUID):
-        async with async_session_maker() as session:
-            db_user = await UserDAO.find_one_or_none(session, id=user_id)
-            if db_user is None:
-                raise UserNotFoundException
-
-            await UserDAO.update(
-                session,
-                UserModel.id == user_id,
-                {'is_active': False}
-            )
-            await session.commit()
 
     @classmethod
     async def get_users_list(cls, *filter, offset: Optional[int] = 0, limit: Optional[int] = 100, **filter_by) -> list[UserModel]:
@@ -102,8 +89,9 @@ class UserService:
             await session.commit()
             return user_update
 
+
     @classmethod
-    async def delete_user_from_superuser(cls, user_id: uuid.UUID):
+    async def delete_user(cls, user_id: uuid.UUID):
         async with async_session_maker() as session:
             await UserDAO.delete(session, UserModel.id == user_id)
             await session.commit()

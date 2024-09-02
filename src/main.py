@@ -1,24 +1,11 @@
 from fastapi import FastAPI
 import uvicorn
-
-from argparse import ArgumentParser
 from config import config
-
-parser = ArgumentParser()
-parser.add_argument("-m", "--mode")
-
-mode = parser.parse_args().mode
-
-config.set_mode(mode)
-config.update_config()
-
-
 from fastapi.middleware.cors import CORSMiddleware
 from auth.auth_router import auth_router
 from users.user_router import user_router
 
 app = FastAPI()
-
 
 app.add_middleware(
     CORSMiddleware,

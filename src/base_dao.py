@@ -1,12 +1,11 @@
-from typing import Any, Dict, Generic, List, Optional, TypeVar, Union
-
+from typing import Any, Generic, Optional, TypeVar
 from sqlalchemy import delete, insert, select, update
 from sqlalchemy.sql import func
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
 from pydantic import BaseModel
-
-from database import async_session_maker, Base
+from database import Base
+# from database import async_session_maker
 
 
 ModelType = TypeVar("ModelType", bound=Base)
@@ -31,7 +30,7 @@ class BaseDAO(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         offset: int = 0,
         limit: int = 100,
         **filter_by
-    ) -> List[ModelType]:
+    ) -> list[ModelType]:
         stmt = (
             select(cls.model)
             .filter(*filter)
@@ -46,7 +45,7 @@ class BaseDAO(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
     async def add(
         cls,
         session: AsyncSession,
-        obj_in: Union[CreateSchemaType, Dict[str, Any]]
+        obj_in: CreateSchemaType | dict[str, Any]
     ) -> Optional[ModelType]:
         if isinstance(obj_in, dict):
             create_data = obj_in
@@ -77,7 +76,7 @@ class BaseDAO(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         cls,
         session: AsyncSession,
         *where,
-        obj_in: Union[UpdateSchemaType, Dict[str, Any]],
+        obj_in: UpdateSchemaType | dict[str, Any],
         # id: Any
     ) -> Optional[ModelType]:
         if isinstance(obj_in, dict):
@@ -96,7 +95,7 @@ class BaseDAO(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         return result.scalars().one()
 
     @classmethod
-    async def add_bulk(cls, session: AsyncSession, data: List[Dict[str, Any]]):
+    async def add_bulk(cls, session: AsyncSession, data: list[dict[str, Any]]):
         try:
             result = await session.execute(
                 insert(cls.model).returning(cls.model),
@@ -114,7 +113,7 @@ class BaseDAO(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
             return None
 
     @classmethod
-    async def update_bulk(cls, session: AsyncSession, data: List[Dict[str, Any]]):
+    async def update_bulk(cls, session: AsyncSession, data: list[dict[str, Any]]):
         try:
             stmt = update(cls.model)
             await session.execute(update(cls.model), data)

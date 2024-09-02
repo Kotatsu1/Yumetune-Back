@@ -8,6 +8,7 @@ from alembic import context
 from database import Base
 from auth.auth_models import *
 from users.user_models import *
+from songs.songs_models import *
 
 from config import config
 

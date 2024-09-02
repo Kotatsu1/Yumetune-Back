@@ -13,7 +13,5 @@ class UserModel(Base):
     )
     username: Mapped[str] = mapped_column(unique=True, index=True)
     hashed_password: Mapped[str]
-    is_active: Mapped[bool] = mapped_column(default=True)
-    is_verified: Mapped[bool] = mapped_column(default=False)
     is_superuser: Mapped[bool] = mapped_column(default=False)
 

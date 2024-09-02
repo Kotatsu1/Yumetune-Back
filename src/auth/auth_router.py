@@ -1,14 +1,12 @@
 import uuid
-
 from fastapi import APIRouter, Depends, Response, Request, status
 from fastapi.security import OAuth2PasswordRequestForm
-
 from users.user_models import UserModel
 from users.user_schemas import UserCreate, User
 from .auth_schemas import Token
 from .auth_service import AuthService
 from users.user_service import UserService
-from security.auth_info import get_current_user, get_current_active_user
+from security.auth_info import get_current_user 
 from users.exceptions import InvalidCredentialsException
 from config import config
 
